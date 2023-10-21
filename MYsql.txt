@@ -1,0 +1,134 @@
+delimiter //
+create procedure display_even()
+BEGIN
+declare num int;
+declare str varchar(100);
+set num=2;
+set str='';
+REPEAT
+set str=concat(str,num,',');
+set num=num+2;
+until num>10
+end repeat;
+set str=substr(str,1,length(str)-1);
+select str;
+END //
+delimiter ;
+
+
+
+
+1. write a procedure to insert a record into dept table
+
+delimiter //
+create procedure insert_dept(in dno int,dname varchar(20),dlocation varchar(20))
+
+BEGIN
+insert into dept values(dno,dname,dlocation);
+end //
+delimiter ;
+
+
+
+FUNCTION
+SET GLOBAL log_bin_trust_function_creators = 1;
+DELIMITER //
+CREATE function calculateSquare(num int)
+returns int
+BEGIN
+declare result int;
+set result=num*num;
+return result;
+
+END //
+DELIMITER ;
+
+
+FUNCTION
+delimiter //
+create function calexp(dhiredate date)
+returns int
+BEGIN
+return floor(datediff(curdate(),dhiredate)/365);
+end //
+delimiter ;
+
+delimiter //
+create procedure change_sal_exp()
+BEGIN
+declare vempno int;
+declare vename varchar(30);
+declare vhiredate date;
+declare vsal,vcomm,vnewsal double(9,2);
+declare vstop int default 0;
+declare vexp int;
+declare emp_cur cursor for select empno,ename,hiredate,sal,comm from emp;
+declare CONTINUE HANDLER for NOT FOUND set vstop=1;
+open emp_cur;
+label1:loop
+	fetch emp_cur into vempno,vename,vhiredate,vsal,vcomm;
+	if vstop=1 then
+		leave label1;
+	end if;
+set vexp=calexp(vhiredate);
+
+if vexp>35 and vexp<=38 then
+set vnewsal=vsal*1.2;
+update emp
+	set sal=vnewsal
+	where empno=vempno;
+elseif vexp>38 then
+set vnewsal=vsal*1.25;
+update emp
+	set sal=vnewsal
+	where empno=vempno;
+end if;
+
+select vempno,vename,vsal,vnewsal;
+end loop;
+close emp_cur;
+end //
+delimiter ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
